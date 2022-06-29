@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, render_template
+from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from werkzeug.exceptions import HTTPException
@@ -18,6 +19,7 @@ def create_app(environment="development"):
     from app.views import (
         main_blueprint,
         auth_blueprint,
+        post_blueprint,
     )
     from app.models import (
         User,
@@ -25,8 +27,8 @@ def create_app(environment="development"):
     )
 
     # Instantiate app.
-    app = Flask(__name__)
-
+    app: Flask = Flask(__name__)
+    Bootstrap(app)
     # Set app config.
     env = os.environ.get("FLASK_ENV", environment)
     app.config.from_object(config[env])
@@ -40,6 +42,7 @@ def create_app(environment="development"):
     # Register blueprints.
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(main_blueprint)
+    app.register_blueprint(post_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader
