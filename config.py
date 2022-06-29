@@ -53,3 +53,4 @@ class ProductionConfig(BaseConfig):
 config = dict(
     development=DevelopmentConfig, testing=TestingConfig, production=ProductionConfig
 )
+ 

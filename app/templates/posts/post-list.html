@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% import "bootstrap/wtf.html" as wtf %} {% block
+content%}
+<h1>Posts</h1>
+<hr />
+{% for post in posts %}
+<p>Post by {{ post.author.username }}</p>
+<p>{{ post.title }}</p>
+<p>{{ post.body }}</p>
+<p>{{ post.date_posted }}</p>
+{% if current_user.id == post.user_id%}
+<a
+  href="{{ url_for('posts.update_post', post_id=post.id) }}"
+  class="btn btn-warning"
+  >Update</a
+>
+<a
+  href="{{ url_for('posts.delete_post', post_id=post.id) }}"
+  class="btn btn-warning"
+  >Delete</a
+>
+{% endif %}
+<hr />
+{% endfor %} {% endblock %}

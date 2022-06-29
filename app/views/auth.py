@@ -1,22 +1,31 @@
+import imp
 from flask import Blueprint, render_template, url_for, redirect, flash, request
 from flask_login import login_user, logout_user, login_required
 
 from app.models import User
 from app.forms import LoginForm, RegistrationForm
+from app.services import UserService
 
-auth_blueprint = Blueprint("auth", __name__)
+bp: Blueprint = Blueprint("auth", __name__)
 
 
-@auth_blueprint.route("/register", methods=["GET", "POST"])
+@bp.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
-        user = User(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data,
-        )
-        user.save()
+        user_service: UserService = UserService()
+        data: dict = {
+            "username": form.username.data,
+            "email": form.email.data,
+            "password": form.password.data,
+        }
+        user = user_service.create_user(data)
+        # user = User(
+        #     username=form.username.data,
+        #     email=form.email.data,
+        #     password=form.password.data,
+        # )
+        # user.save()
         login_user(user)
         flash("Registration successful. You are logged in.", "success")
         return redirect(url_for("main.index"))
@@ -25,7 +34,7 @@ def register():
     return render_template("auth/register.html", form=form)
 
 
-@auth_blueprint.route("/login", methods=["GET", "POST"])
+@bp.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
@@ -38,7 +47,7 @@ def login():
     return render_template("auth/login.html", form=form)
 
 
-@auth_blueprint.route("/logout")
+@bp.route("/logout")
 @login_required
 def logout():
     logout_user()

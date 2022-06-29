@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% import "bootstrap/wtf.html" as wtf %} {% block
+    content %}
+    <h1 class="text-center mt-5 mb-5">Create New Post</h1>
+    <hr />
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+    %} {% for category, message in messages %}
+    <div class="small alert alert-{{ category }} alert-dismisible text-center">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <form class="form-horizontal" method="POST" action="">
+      {{ form.hidden_tag() }}
+      <div class="d-flex justify-content-center">
+        <dl class="form-group col-md-5 center-row-container">
+          {{ wtf.form_field(form.title, class='form-control
+          collectes-date-chargement-min text-center') }} {{
+          wtf.form_field(form.body, class='form-control
+          collectes-date-chargement-min text-center') }}
+        </dl>
+      </div>
+      <div class="text-center">
+        <a
+          href="{{ url_for('main.index') }}"
+          class="btn btn-dark btn-block btn-with-small-margin text-center"
+          >Back</a
+        >
+        {{ wtf.form_field(form.submit, class='btn btn-warning btn-block
+        btn-with-small-margin text-center')}}
+      </div>
+    </form>
+    {% endblock %}
+    

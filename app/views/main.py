@@ -1,8 +1,12 @@
-from flask import render_template, Blueprint
+from flask import redirect, render_template, Blueprint, url_for
+from flask_login import current_user, login_required
 
-main_blueprint = Blueprint("main", __name__)
+bp: Blueprint = Blueprint("main", __name__)
 
 
-@main_blueprint.route("/")
+@bp.route("/")
+@login_required
 def index():
-    return render_template("index.html")
+    if current_user.is_authenticated:
+        return render_template("index.html")
+    return redirect(url_for("auth.login"))

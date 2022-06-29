@@ -21,6 +21,9 @@ SQLAlchemy = "^1.4.32"
 Werkzeug = "2.0.0"
 psycopg2-binary = "^2.9.3"
 Flask-Migrate = "^3.1.0"
+Flask-Bootstrap = "^3.3.7"
+pydantic = "^1.9.1"
+pydantic-sqlalchemy = "^0.0.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.1"

@@ -1,9 +1,13 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container">
-  <h1>Welcome!</h1>
-  <hr>
-  <p>Add some content here!</p>
+  <a href="{{ url_for('posts.get_all_posts') }}" class="btn btn-info"
+    >View All Posts</a
+  >
+  <a href="{{ url_for('posts.create_post') }}" class="btn btn-info"
+    >Create Post</a
+  >
+  <a href="{{ url_for('posts.get_all_user_posts') }}" class="btn btn-info"
+    >View My Posts</a
+  >
 </div>
 {% endblock %}

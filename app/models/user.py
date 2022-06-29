@@ -19,6 +19,8 @@ class User(db.Model, UserMixin, ModelMixin):
     password_hash = db.Column(db.String(255), nullable=False)
     activated = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    posts = db.relationship("Post", backref="author", lazy=True)
 
     @hybrid_property
     def password(self):
@@ -31,7 +33,10 @@ class User(db.Model, UserMixin, ModelMixin):
     @classmethod
     def authenticate(cls, user_id, password):
         user = cls.query.filter(
-            db.or_(func.lower(cls.username) == func.lower(user_id), func.lower(cls.email) == func.lower(user_id))
+            db.or_(
+                func.lower(cls.username) == func.lower(user_id),
+                func.lower(cls.email) == func.lower(user_id),
+            )
         ).first()
         if user is not None and check_password_hash(user.password, password):
             return user

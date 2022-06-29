@@ -1,32 +1,4 @@
-import pytest
-
-from app import db, create_app
-from tests.utils import register, login, logout
-
-
-@pytest.fixture
-def client():
-    app = create_app(environment="testing")
-    app.config["TESTING"] = True
-
-    with app.test_client() as client:
-        app_ctx = app.app_context()
-        app_ctx.push()
-        db.drop_all()
-        db.create_all()
-        yield client
-        db.session.remove()
-        db.drop_all()
-        app_ctx.pop()
-
-
-def test_auth_pages(client):
-    response = client.get("/register")
-    assert response.status_code == 200
-    response = client.get("/login")
-    assert response.status_code == 200
-    response = client.get("/logout")
-    assert response.status_code == 302
+from .utils import register, login, logout
 
 
 def test_register(client):
@@ -40,7 +12,7 @@ def test_register(client):
         ),
         follow_redirects=True,
     )
-    assert b"Registration successful. You are logged in." in response.data
+    assert b"Registration successful. You are logged in" in response.data
 
 
 def test_login_and_logout(client):
