@@ -1,2 +1,7 @@
 {% extends 'base.html' %} {% import "bootstrap/wtf.html" as wtf %} {% block
-content %} {% endblock %}
+content %}
+<h1>{{ post.title }}</h1>
+<h5>Author: {{ post.author}}</h5>
+<p>{{ post.body }}</p>
+<p>{{ post.date_posted }}</p>
+{% endblock %}

@@ -13,24 +13,32 @@ bp: Blueprint = Blueprint("posts", __name__, url_prefix="/posts")
 @login_required
 def get_all_posts():
     if not current_user.is_authenticated:
-        return redirect(url_for("auth/login"))
+        return redirect(url_for("auth.login"))
     post_service: PostService = PostService()
     posts = post_service.get_all()
     return render_template("posts/post-list.html", posts=posts)
 
 
 @bp.route("/my_posts", methods=["GET"])
+@login_required
 def get_all_user_posts():
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login"))
     post_service: PostService = PostService()
     posts = post_service.get_all_by_filter_query(user_id=current_user.id)
     return render_template("posts/post-list.html", posts=posts)
 
 
 @bp.route("/<int:pk>", methods=["GET"])
+@login_required
 def get_post_by_id(pk):
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login"))
     post_service: PostService = PostService()
-    post = post_service.get(id=pk)
-    return render_template("posts/post-info.html", post=query)
+    post: Post = post_service.get(id=pk)
+    if post is None:
+        return render_template("404.html"), 404
+    return render_template("posts/post-info.html", post=post)
 
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -66,6 +74,11 @@ def update_post(post_id):
         return redirect(url_for("auth.login"))
     post_service: PostService = PostService()
     post: Post = post_service.get(id=post_id)
+    if post is None:
+        return render_template("404.html"), 404
+    if post.author.id != current_user.id:
+        flash("You're not allowed to change other user's posts")
+        return render_template("index.html"), 405
     form = UpdatePostForm(obj=post)
     if form.validate_on_submit():
         data: dict = {"title": form.title.data, "body": form.body.data}
@@ -81,7 +94,10 @@ def delete_post(post_id):
         return redirect(url_for("auth.login"))
     post_service: PostService = PostService()
     post = post_service.get(id=post_id)
-    if post is not None:
-        post_service.delete(id=post_id)
-        return redirect(url_for("posts.get_all_posts"))
-    return render_template("404.html"), 404
+    if post is None:
+        return render_template("404.html"), 404
+    if post.author.id != current_user.id:
+        flash("You're not allowed to delete other user's posts")
+        return render_template("index.html"), 405
+    post_service.delete(id=post_id)
+    return redirect(url_for("posts.get_all_posts"))
