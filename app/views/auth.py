@@ -19,12 +19,6 @@ def register():
             "password": form.password.data,
         }
         user = user_service.create_user(data)
-        # user = User(
-        #     username=form.username.data,
-        #     email=form.email.data,
-        #     password=form.password.data,
-        # )
-        # user.save()
         login_user(user)
         flash("Registration successful. You are logged in.", "success")
         return redirect(url_for("main.index"))
